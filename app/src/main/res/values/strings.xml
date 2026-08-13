@@ -485,8 +485,6 @@
     <!-- Additional menu strings -->
     <string name="menu_add_bookmark">添加书签</string>
     <string name="menu_forward">前进</string>
-    <string name="menu_downloads">下载</string>
-    <string name="menu_passwords">密码</string>
     <string name="menu_privacy_mode">隐私模式</string>
     <string name="menu_refresh">刷新</string>
     <string name="menu_tabs">标签页</string>
