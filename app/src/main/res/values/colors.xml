@@ -114,4 +114,7 @@
     <color name="download_complete">#4CAF50</color>
     <color name="download_failed">#F44336</color>
     <color name="download_paused">#FF9800</color>
+    <!-- Free User Banner -->
+    <color name="free_banner_bg">#FFF3E0</color>
+    <color name="free_banner_text">#E65100</color>
 </resources>

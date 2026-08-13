@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-
     <!-- Base application theme. -->
     <style name="Theme.ChuBrowser" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
@@ -22,313 +21,26 @@
         <item name="android:windowLightNavigationBar">true</item>
         <item name="android:windowBackground">@color/background</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:windowTranslucentStatus">false</item>
-        <item name="android:windowTranslucentNavigation">false</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="android:windowContentTransitions">true</item>
-        <item name="android:windowAllowEnterTransitionOverlap">true</item>
-        <item name="android:windowAllowReturnTransitionOverlap">true</item>
         <item name="android:textColorPrimary">@color/text_primary</item>
         <item name="android:textColorSecondary">@color/text_secondary</item>
         <item name="android:textColorHint">@color/text_disabled</item>
         <item name="android:dividerHeight">1dp</item>
         <item name="android:divider">@color/divider</item>
-        <item name="android:listPreferredItemHeight">48dp</item>
-        <item name="android:listPreferredItemHeightSmall">48dp</item>
-        <item name="android:listPreferredItemHeightLarge">64dp</item>
-        <item name="android:actionBarStyle">@style/ChuBrowserActionBar</item>
-        <item name="android:popupMenuStyle">@style/ChuBrowserPopupMenu</item>
-        <item name="android:alertDialogTheme">@style/ChuBrowserAlertDialog</item>
-        <item name="android:progressBarStyle">@style/ChuBrowserProgressBar</item>
-        <item name="android:editTextStyle">@style/ChuBrowserEditText</item>
-        <item name="android:buttonStyle">@style/ChuBrowserButton</item>
-        <item name="android:checkboxStyle">@style/ChuBrowserCheckbox</item>
-        <item name="android:switchStyle">@style/ChuBrowserSwitch</item>
-        <item name="android:spinnerStyle">@style/ChuBrowserSpinner</item>
-        <item name="android:spinnerItemStyle">@style/ChuBrowserSpinnerItem</item>
-        <item name="android:spinnerDropDownItemStyle">@style/ChuBrowserSpinnerDropDownItem</item>
-        <item name="android:listViewStyle">@style/ChuBrowserListView</item>
-        <item name="android:recyclerViewStyle">@style/ChuBrowserRecyclerView</item>
-        <item name="android:cardViewStyle">@style/ChuBrowserCardView</item>
-        <item name="android:toolbarStyle">@style/ChuBrowserToolbar</item>
-        <item name="android:bottomNavigationViewStyle">@style/ChuBrowserBottomNavigation</item>
-        <item name="android:tabWidgetStyle">@style/ChuBrowserTabWidget</item>
-        <item name="android:scrollViewStyle">@style/ChuBrowserScrollView</item>
-        <item name="android:seekBarStyle">@style/ChuBrowserSeekBar</item>
-        <item name="android:ratingBarStyle">@style/ChuBrowserRatingBar</item>
-        <item name="android:expandableListViewStyle">@style/ChuBrowserExpandableListView</item>
-        <item name="android:preferenceStyle">@style/ChuBrowserPreference</item>
-        <item name="android:preferenceCategoryStyle">@style/ChuBrowserPreferenceCategory</item>
-        <item name="android:preferenceScreenStyle">@style/ChuBrowserPreferenceScreen</item>
-        <item name="android:switchPreferenceStyle">@style/ChuBrowserSwitchPreference</item>
-        <item name="android:checkBoxPreferenceStyle">@style/ChuBrowserCheckBoxPreference</item>
-        <item name="android:listPreferenceStyle">@style/ChuBrowserListPreference</item>
-        <item name="android:editTextPreferenceStyle">@style/ChuBrowserEditTextPreference</item>
     </style>
 
-    <style name="Theme.ChuBrowser.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
-    <style name="Theme.ChuBrowser.Privacy" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/privacy_primary</item>
-        <item name="colorPrimaryDark">@color/privacy_primary_dark</item>
-        <item name="colorPrimaryVariant">@color/privacy_primary_dark</item>
-        <item name="colorOnPrimary">@color/button_text</item>
-        <item name="colorSecondary">@color/accent</item>
-        <item name="android:colorBackground">@color/privacy_background</item>
-        <item name="colorOnBackground">@color/text_primary_dark</item>
-        <item name="colorSurface">@color/privacy_surface</item>
-        <item name="colorOnSurface">@color/text_primary_dark</item>
-        <item name="android:statusBarColor">@color/privacy_primary_dark</item>
-        <item name="android:navigationBarColor">@color/privacy_background</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowLightNavigationBar">false</item>
-        <item name="android:windowBackground">@color/privacy_background</item>
-    </style>
-
-    <!-- ActionBar -->
-    <style name="ChuBrowserActionBar" parent="Widget.Material3.ActionBar">
-        <item name="android:background">@color/primary</item>
-        <item name="android:titleTextStyle">@style/ChuBrowserActionBarTitle</item>
-        <item name="android:subtitleTextStyle">@style/ChuBrowserActionBarSubtitle</item>
-        <item name="android:elevation">4dp</item>
-    </style>
-
-    <style name="ChuBrowserActionBarTitle" parent="TextAppearance.Material3.TitleLarge">
-        <item name="android:textColor">@color/button_text</item>
-        <item name="android:textSize">20sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="ChuBrowserActionBarSubtitle" parent="TextAppearance.Material3.TitleSmall">
-        <item name="android:textColor">@color/button_text</item>
+    <!-- Free User Banner -->
+    <style name="FreeUserBanner">
+        <item name="android:background">@drawable/bg_free_banner</item>
+        <item name="android:textColor">@color/free_banner_text</item>
         <item name="android:textSize">14sp</item>
-    </style>
-
-    <!-- Toolbar -->
-    <style name="ChuBrowserToolbar" parent="Widget.Material3.Toolbar">
-        <item name="android:background">@color/primary</item>
-        <item name="android:titleTextColor">@color/button_text</item>
-        <item name="android:subtitleTextColor">@color/button_text</item>
-        <item name="android:elevation">4dp</item>
-    </style>
-
-    <!-- PopupMenu -->
-    <style name="ChuBrowserPopupMenu" parent="Widget.Material3.PopupMenu">
-        <item name="android:popupBackground">@color/surface</item>
-        <item name="android:textColor">@color/text_primary</item>
-    </style>
-
-    <!-- AlertDialog -->
-    <style name="ChuBrowserAlertDialog" parent="Theme.Material3.DayNight.Dialog.Alert">
-        <item name="android:windowBackground">@color/surface</item>
-        <item name="android:textColorPrimary">@color/text_primary</item>
-        <item name="android:textColorSecondary">@color/text_secondary</item>
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorAccent">@color/accent</item>
-        <item name="buttonBarPositiveButtonStyle">@style/ChuBrowserDialogButton</item>
-        <item name="buttonBarNegativeButtonStyle">@style/ChuBrowserDialogButton</item>
-        <item name="buttonBarNeutralButtonStyle">@style/ChuBrowserDialogButton</item>
-    </style>
-
-    <style name="ChuBrowserDialogButton" parent="Widget.Material3.Button.TextButton.Dialog">
-        <item name="android:textColor">@color/primary</item>
-    </style>
-
-    <!-- ProgressBar -->
-    <style name="ChuBrowserProgressBar" parent="Widget.Material3.ProgressBar.Horizontal">
-        <item name="android:progressTint">@color/progress_bar</item>
-        <item name="android:progressBackgroundTint">@color/progress_bg</item>
-        <item name="android:indeterminateTint">@color/progress_bar</item>
-    </style>
-
-    <!-- EditText -->
-    <style name="ChuBrowserEditText" parent="Widget.Material3.TextInputEditText.OutlinedBox">
-        <item name="android:background">@color/input_bg</item>
-        <item name="android:textColor">@color/text_primary</item>
-        <item name="android:textColorHint">@color/text_disabled</item>
-        <item name="android:textCursorDrawable">@color/primary</item>
-        <item name="colorControlActivated">@color/primary</item>
-        <item name="colorControlNormal">@color/input_border</item>
-    </style>
-
-    <!-- Button -->
-    <style name="ChuBrowserButton" parent="Widget.Material3.Button">
-        <item name="android:backgroundTint">@color/button_bg</item>
-        <item name="android:textColor">@color/button_text</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="android:cornerRadius">8dp</item>
-        <item name="android:elevation">2dp</item>
-    </style>
-
-    <!-- Checkbox -->
-    <style name="ChuBrowserCheckbox" parent="Widget.Material3.CompoundButton.CheckBox">
-        <item name="android:textColor">@color/text_primary</item>
-        <item name="colorControlActivated">@color/primary</item>
-        <item name="colorControlNormal">@color/icon_default</item>
-    </style>
-
-    <!-- Switch -->
-    <style name="ChuBrowserSwitch" parent="Widget.Material3.CompoundButton.MaterialSwitch">
-        <item name="android:textColor">@color/text_primary</item>
-        <item name="colorControlActivated">@color/primary</item>
-        <item name="colorSwitchThumbNormal">@color/switch_thumb_disabled</item>
-        <item name="android:thumbTint">@color/switch_thumb_enabled</item>
-        <item name="android:trackTint">@color/switch_track_enabled</item>
-    </style>
-
-    <!-- Spinner -->
-    <style name="ChuBrowserSpinner" parent="Widget.Material3.Spinner.OutlinedBox">
-        <item name="android:background">@color/input_bg</item>
-        <item name="android:textColor">@color/text_primary</item>
-    </style>
-
-    <style name="ChuBrowserSpinnerItem" parent="TextAppearance.Material3.BodyMedium">
-        <item name="android:textColor">@color/text_primary</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:padding">12dp</item>
-    </style>
-
-    <style name="ChuBrowserSpinnerDropDownItem" parent="TextAppearance.Material3.BodyMedium">
-        <item name="android:textColor">@color/text_primary</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:padding">12dp</item>
-    </style>
-
-    <!-- ListView -->
-    <style name="ChuBrowserListView" parent="Widget.Material3.ListView">
-        <item name="android:divider">@color/divider</item>
-        <item name="android:dividerHeight">1dp</item>
-        <item name="android:listSelector">@color/primary_light</item>
-    </style>
-
-    <!-- RecyclerView -->
-    <style name="ChuBrowserRecyclerView" parent="Widget.Material3.RecyclerView">
-        <item name="android:scrollbars">vertical</item>
-        <item name="android:scrollbarStyle">outsideInset</item>
-    </style>
-
-    <!-- CardView -->
-    <style name="ChuBrowserCardView" parent="Widget.Material3.CardView.Elevated">
-        <item name="cardBackgroundColor">@color/card_bg</item>
-        <item name="cardCornerRadius">12dp</item>
-        <item name="cardElevation">4dp</item>
-        <item name="contentPadding">16dp</item>
-    </style>
-
-    <!-- BottomNavigation -->
-    <style name="ChuBrowserBottomNavigation" parent="Widget.Material3.BottomNavigationView">
-        <item name="android:background">@color/surface</item>
-        <item name="itemIconTint">@color/primary</item>
-        <item name="itemTextColor">@color/primary</item>
-        <item name="itemRippleColor">@color/primary_light</item>
-    </style>
-
-    <!-- TabWidget -->
-    <style name="ChuBrowserTabWidget" parent="Widget.Material3.TabWidget">
-        <item name="android:background">@color/tab_bg</item>
-        <item name="android:showDividers">none</item>
-    </style>
-
-    <!-- ScrollView -->
-    <style name="ChuBrowserScrollView" parent="Widget.Material3.ScrollView">
-        <item name="android:scrollbars">vertical</item>
-        <item name="android:scrollbarStyle">outsideInset</item>
-        <item name="android:fillViewport">true</item>
-    </style>
-
-    <!-- SeekBar -->
-    <style name="ChuBrowserSeekBar" parent="Widget.Material3.SeekBar">
-        <item name="android:progressTint">@color/primary</item>
-        <item name="android:progressBackgroundTint">@color/divider</item>
-        <item name="android:thumbTint">@color/primary</item>
-    </style>
-
-    <!-- RatingBar -->
-    <style name="ChuBrowserRatingBar" parent="Widget.Material3.RatingBar">
-        <item name="android:progressTint">@color/warning</item>
-        <item name="android:progressBackgroundTint">@color/divider</item>
-    </style>
-
-    <!-- ExpandableListView -->
-    <style name="ChuBrowserExpandableListView" parent="Widget.Material3.ExpandableListView">
-        <item name="android:divider">@color/divider</item>
-        <item name="android:dividerHeight">1dp</item>
-        <item name="android:groupIndicator">@null</item>
-    </style>
-
-    <!-- Preferences -->
-    <style name="ChuBrowserPreference" parent="Preference.Material3">
-        <item name="android:layout">@layout/preference_item</item>
-    </style>
-
-    <style name="ChuBrowserPreferenceCategory" parent="PreferenceCategory.Material3">
-        <item name="android:layout">@layout/preference_category</item>
-    </style>
-
-    <style name="ChuBrowserPreferenceScreen" parent="PreferenceScreen.Material3">
-        <item name="android:layout">@layout/preference_screen</item>
-    </style>
-
-    <style name="ChuBrowserSwitchPreference" parent="SwitchPreference.Material3">
-        <item name="android:layout">@layout/preference_switch</item>
-    </style>
-
-    <style name="ChuBrowserCheckBoxPreference" parent="CheckBoxPreference.Material3">
-        <item name="android:layout">@layout/preference_checkbox</item>
-    </style>
-
-    <style name="ChuBrowserListPreference" parent="ListPreference.Material3">
-        <item name="android:layout">@layout/preference_list</item>
-    </style>
-
-    <style name="ChuBrowserEditTextPreference" parent="EditTextPreference.Material3">
-        <item name="android:layout">@layout/preference_edittext</item>
-    </style>
-
-    <!-- 文本样式 -->
-    <style name="ChuBrowserText.Title" parent="TextAppearance.Material3.HeadlineMedium">
-        <item name="android:textColor">@color/text_primary</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:gravity">center</item>
     </style>
 
-    <style name="ChuBrowserText.Subtitle" parent="TextAppearance.Material3.TitleMedium">
-        <item name="android:textColor">@color/text_primary</item>
-    </style>
-
-    <style name="ChuBrowserText.Body" parent="TextAppearance.Material3.BodyMedium">
-        <item name="android:textColor">@color/text_primary</item>
-    </style>
-
-    <style name="ChuBrowserText.Caption" parent="TextAppearance.Material3.BodySmall">
-        <item name="android:textColor">@color/text_secondary</item>
-    </style>
-
-    <style name="ChuBrowserText.Button" parent="TextAppearance.Material3.LabelLarge">
-        <item name="android:textColor">@color/button_text</item>
-        <item name="android:textAllCaps">false</item>
-    </style>
-
-    <!-- 地址栏样式 -->
-    <style name="AddressBar">
-        <item name="android:background">@drawable/address_bar_bg</item>
-        <item name="android:paddingStart">16dp</item>
-        <item name="android:paddingEnd">16dp</item>
-        <item name="android:paddingTop">10dp</item>
-        <item name="android:paddingBottom">10dp</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/address_bar_text</item>
-        <item name="android:hintTextColor">@color/text_disabled</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:imeOptions">actionSearch|flagNoExtractUi</item>
-        <item name="android:inputType">textUri|textAutoComplete</item>
-        <item name="android:gravity">center_vertical</item>
-    </style>
-
-    <!-- 标签页样式 -->
+    <!-- Tab Text -->
     <style name="TabText" parent="TextAppearance.Material3.BodySmall">
         <item name="android:textColor">@color/text_primary</item>
         <item name="android:textSize">12sp</item>
@@ -336,18 +48,28 @@
         <item name="android:ellipsize">end</item>
     </style>
 
-    <!-- 下载通知样式 -->
-    <style name="DownloadNotification" parent="TextAppearance.Material3.BodyMedium">
+    <!-- URL Bar -->
+    <style name="UrlBar">
+        <item name="android:background">@drawable/bg_url_bar</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColorHint">@color/text_disabled</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:imeOptions">actionSearch|flagNoExtractUi</item>
+        <item name="android:inputType">textUri|textAutoComplete</item>
+        <item name="android:gravity">center_vertical</item>
     </style>
 
-    <!-- 启动页主题 -->
+    <!-- Splash theme -->
     <style name="Theme.ChuBrowser.Splash" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:windowBackground">@drawable/splash_background</item>
+        <item name="android:windowBackground">@color/primary</item>
         <item name="android:statusBarColor">@color/primary</item>
         <item name="android:navigationBarColor">@color/primary</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowLightNavigationBar">false</item>
     </style>
-
 </resources>
