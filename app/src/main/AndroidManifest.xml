@@ -1,64 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
     <!-- 网络权限 -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-
     <!-- 存储权限 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
-
-    <!-- 下载相关 -->
-    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-
-    <!-- 位置权限 -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
     <!-- 相机权限（二维码、验证码识别） -->
     <uses-permission android:name="android.permission.CAMERA" />
-
     <!-- 麦克风权限 -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <!-- 通知权限 -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-
-    <!-- 生物识别 -->
-    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
-    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
-
     <!-- 前台服务 -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
-
     <!-- 启动时权限 -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
     <!-- 振动 -->
     <uses-permission android:name="android.permission.VIBRATE" />
-
-    <!-- 剪贴板 -->
-    <uses-permission android:name="android.permission.READ_CLIPBOARD_IN_BACKGROUND" />
-
     <uses-feature android:name="android.hardware.camera" android:required="false" />
-    <uses-feature android:name="android.hardware.location" android:required="false" />
     <uses-feature android:name="android.hardware.microphone" android:required="false" />
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
-
     <application
         android:name=".ChuBrowserApp"
-        android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -67,17 +37,14 @@
         android:usesCleartextTraffic="true"
         android:hardwareAccelerated="true"
         android:largeHeap="true"
-        android:networkSecurityConfig="@xml/network_security_config"
         tools:targetApi="34">
-
         <!-- 主浏览器Activity -->
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
             android:configChanges="orientation|screenSize|keyboardHidden|uiMode|screenLayout|smallestScreenSize"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Theme.ChuBrowser.NoActionBar">
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -97,109 +64,11 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-
-        <!-- 设置Activity -->
-        <activity
-            android:name=".ui.settings.SettingsActivity"
-            android:exported="false"
-            android:label="@string/settings"
-            android:parentActivityName=".ui.MainActivity" />
-
-        <!-- 密码管理器Activity -->
-        <activity
-            android:name=".ui.password.PasswordManagerActivity"
-            android:exported="false"
-            android:label="@string/password_manager"
-            android:parentActivityName=".ui.MainActivity" />
-
-        <!-- 书签Activity -->
-        <activity
-            android:name=".ui.bookmark.BookmarkActivity"
-            android:exported="false"
-            android:label="@string/bookmarks"
-            android:parentActivityName=".ui.MainActivity" />
-
-        <!-- 下载管理Activity -->
-        <activity
-            android:name=".ui.download.DownloadActivity"
-            android:exported="false"
-            android:label="@string/downloads"
-            android:parentActivityName=".ui.MainActivity" />
-
-        <!-- 历史记录Activity -->
-        <activity
-            android:name=".ui.history.HistoryActivity"
-            android:exported="false"
-            android:label="@string/history"
-            android:parentActivityName=".ui.MainActivity" />
-
-        <!-- 开发者工具Activity -->
-        <activity
-            android:name=".ui.devtools.DevToolsActivity"
-            android:exported="false"
-            android:label="@string/developer_tools"
-            android:parentActivityName=".ui.MainActivity" />
-
-        <!-- 证书信息Activity -->
-        <activity
-            android:name=".ui.cert.CertificateInfoActivity"
-            android:exported="false"
-            android:label="@string/certificate_info"
-            android:parentActivityName=".ui.MainActivity" />
-
-        <!-- Cookie管理Activity -->
-        <activity
-            android:name=".ui.cookie.CookieManagerActivity"
-            android:exported="false"
-            android:label="@string/cookie_manager"
-            android:parentActivityName=".ui.MainActivity" />
-
-        <!-- 隐私隔离空间Activity -->
-        <activity
-            android:name=".ui.privacy.PrivacySpaceActivity"
-            android:exported="false"
-            android:label="@string/privacy_space"
-            android:parentActivityName=".ui.MainActivity" />
-
-        <!-- 安全验证Activity -->
-        <activity
-            android:name=".ui.security.SecurityCheckActivity"
-            android:exported="false"
-            android:label="@string/security_check"
-            android:parentActivityName=".ui.MainActivity" />
-
-        <!-- 标签管理Activity -->
-        <activity
-            android:name=".ui.tabs.TabManagerActivity"
-            android:exported="false"
-            android:label="@string/tabs"
-            android:parentActivityName=".ui.MainActivity" />
-
         <!-- 下载服务 -->
         <service
-            android:name=".download.DownloadService"
+            android:name=".util.DownloadService"
             android:exported="false"
             android:foregroundServiceType="dataSync" />
-
-        <!-- 下载完成广播 -->
-        <receiver
-            android:name=".download.DownloadCompleteReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
-                <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED" />
-            </intent-filter>
-        </receiver>
-
-        <!-- 启动广播 -->
-        <receiver
-            android:name=".utils.BootReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-
         <!-- FileProvider -->
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -210,7 +79,5 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
     </application>
-
 </manifest>
