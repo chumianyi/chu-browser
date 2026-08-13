@@ -130,4 +130,6 @@
     <color name="divider_light">#E0E0E0</color>
     <color name="icon_light">#757575</color>
     <color name="danger">#F44336</color>
+    <color name="tab_background">#ECEFF1</color>
+    <color name="url_bar_bg">#F5F5F5</color>
 </resources>
