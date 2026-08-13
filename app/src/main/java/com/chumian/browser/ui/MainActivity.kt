@@ -168,6 +168,9 @@ class MainActivity : AppCompatActivity() {
                     progressBar.progress = 0
                     addressBar.setText(url)
                     urlText.text = url
+                    val isSecure = url.startsWith("https://")
+                    securityIcon.setImageResource(if (isSecure) R.drawable.ic_security else R.drawable.ic_warning)
+                    securityIcon.setColorFilter(ContextCompat.getColor(this@MainActivity, if (isSecure) R.color.primary else R.color.danger))
                 }
                 val idx = sessions.indexOf(s)
                 if (idx >= 0) sessionUrls[idx] = url
@@ -185,15 +188,6 @@ class MainActivity : AppCompatActivity() {
                     progressBar.progress = progress
                 }
             }
-
-            override fun onSecurityChange(s: GeckoSession, securityInfo: GeckoSession.ProgressDelegate.SecurityInformation?) {
-                if (s == currentSession) {
-                    val url = sessionUrls[currentSessionIndex]
-                    val isSecure = url.startsWith("https://")
-                    securityIcon.setImageResource(if (isSecure) R.drawable.ic_security else R.drawable.ic_warning)
-                    securityIcon.setColorFilter(ContextCompat.getColor(this@MainActivity, if (isSecure) R.color.primary else R.color.danger))
-                }
-            }
         }
 
         session.contentDelegate = object : GeckoSession.ContentDelegate {
@@ -201,16 +195,6 @@ class MainActivity : AppCompatActivity() {
                 val idx = sessions.indexOf(s)
                 if (idx >= 0) {
                     sessionTitles[idx] = title ?: "无标题"
-                }
-            }
-
-            override fun onExternalResponse(s: GeckoSession, response: GeckoSession.WebResponseInfo) {
-                if (response.contentType?.startsWith("application/") == true ||
-                    response.contentType?.contains("octet-stream") == true ||
-                    response.contentType?.contains("zip") == true ||
-                    response.contentType?.contains("pdf") == true ||
-                    response.contentType?.contains("apk") == true) {
-                    showDownloadConfirm(response.uri, response.contentType ?: "file")
                 }
             }
         }
@@ -236,17 +220,6 @@ class MainActivity : AppCompatActivity() {
             override fun onNewSession(s: GeckoSession, uri: String): GeckoResult<GeckoSession>? {
                 createNewSession(uri)
                 return GeckoResult.fromValue(currentSession)
-            }
-
-            override fun onLocationChange(s: GeckoSession, url: String?) {
-                val idx = sessions.indexOf(s)
-                if (idx >= 0 && url != null) {
-                    sessionUrls[idx] = url
-                    if (s == currentSession) {
-                        addressBar.setText(url)
-                        urlText.text = url
-                    }
-                }
             }
         }
     }
