@@ -18,17 +18,19 @@ import com.chumian.browser.adblock.AdBlocker
 import com.chumian.browser.databinding.FragmentBrowserBinding
 import com.chumian.browser.security.SecurityValidator
 import com.chumian.browser.util.DownloadService
-import org.mozilla.geckoview.GeckoView
+import org.mozilla.geckoview.GeckoResult
 import org.mozilla.geckoview.GeckoSession
-import org.mozilla.geckoview.WebRequestError
+import org.mozilla.geckoview.GeckoView
+import org.mozilla.geckoview.WebResponse
 
 class BrowserFragment : Fragment() {
-
     private var _binding: FragmentBrowserBinding? = null
     private val binding get() = _binding!!
     private val viewModel: BrowserViewModel by viewModels()
     private var currentGeckoView: GeckoView? = null
     private lateinit var adBlocker: AdBlocker
+    private var currentUrl: String = ""
+    private var currentTitle: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,10 +46,8 @@ class BrowserFragment : Fragment() {
         adBlocker = AdBlocker(requireContext())
         adBlocker.initialize()
         viewModel.initializeRuntime()
-
         setupClickListeners()
         observeViewModel()
-
         if (viewModel.tabs.value.isNullOrEmpty()) {
             viewModel.newTab("https://www.bing.com")
         }
@@ -68,7 +68,6 @@ class BrowserFragment : Fragment() {
             findNavController().navigate(R.id.tabsFragment)
         }
         binding.btnMenu.setOnClickListener { showMenu() }
-
         binding.urlBar.setOnEditorActionListener { _, _, _ ->
             val query = binding.urlBar.text.toString().trim()
             if (query.isNotEmpty()) {
@@ -83,22 +82,18 @@ class BrowserFragment : Fragment() {
         viewModel.tabs.observe(viewLifecycleOwner) { tabs ->
             updateTabsBar(tabs)
         }
-
-        viewModel.currentTabIndex.observe(viewLifecycleOwner) { index ->
+        viewModel.currentTabIndex.observe(viewLifecycleOwner) {
             attachCurrentGeckoView()
         }
-
         viewModel.currentUrl.observe(viewLifecycleOwner) { url ->
             if (binding.urlBar.text.toString() != url) {
                 binding.urlBar.setText(url)
             }
         }
-
         viewModel.loadingProgress.observe(viewLifecycleOwner) { progress ->
             binding.progressBar.progress = progress
             binding.progressBar.visibility = if (progress in 1..99) View.VISIBLE else View.GONE
         }
-
         viewModel.isLoading.observe(viewLifecycleOwner) { loading ->
             binding.progressBar.visibility = if (loading) View.VISIBLE else View.GONE
         }
@@ -107,7 +102,6 @@ class BrowserFragment : Fragment() {
     private fun updateTabsBar(tabs: List<com.chumian.browser.data.model.Tab>) {
         binding.tabsContainer.removeAllViews()
         val currentIndex = viewModel.currentTabIndex.value ?: 0
-
         tabs.forEachIndexed { index, tab ->
             val tabView = LayoutInflater.from(requireContext())
                 .inflate(R.layout.item_tab, binding.tabsContainer, false) as LinearLayout
@@ -127,8 +121,9 @@ class BrowserFragment : Fragment() {
 
     private fun attachCurrentGeckoView() {
         val tab = viewModel.getCurrentTab() ?: return
+        currentUrl = tab.url
+        currentTitle = tab.title
         binding.browserContainer.removeAllViews()
-
         currentGeckoView = GeckoView(requireContext())
         currentGeckoView?.setSession(tab.session)
         binding.browserContainer.addView(
@@ -139,22 +134,19 @@ class BrowserFragment : Fragment() {
 
         tab.session.progressDelegate = object : GeckoSession.ProgressDelegate {
             override fun onPageStart(session: GeckoSession, url: String) {
-                viewModel.updateCurrentTab(url, session.title ?: url, 0, true)
+                currentUrl = url
+                viewModel.updateCurrentTab(url, currentTitle, 0, true)
             }
 
             override fun onPageStop(session: GeckoSession, success: Boolean) {
-                val url = session.currentUri ?: ""
-                val title = session.title ?: url
-                viewModel.updateCurrentTab(url, title, 100, false)
-                if (success && url.isNotEmpty()) {
-                    viewModel.addHistory(title, url)
+                viewModel.updateCurrentTab(currentUrl, currentTitle, 100, false)
+                if (success && currentUrl.isNotEmpty()) {
+                    viewModel.addHistory(currentTitle, currentUrl)
                 }
             }
 
             override fun onProgressChange(session: GeckoSession, progress: Int) {
-                val url = session.currentUri ?: ""
-                val title = session.title ?: url
-                viewModel.updateCurrentTab(url, title, progress, progress < 100)
+                viewModel.updateCurrentTab(currentUrl, currentTitle, progress, progress < 100)
             }
 
             override fun onSecurityChange(
@@ -162,12 +154,11 @@ class BrowserFragment : Fragment() {
                 securityInfo: GeckoSession.ProgressDelegate.SecurityInformation?
             ) {
                 securityInfo?.let {
-                    val url = session.currentUri ?: ""
                     if (viewModel.settings.securityEnabled) {
-                        val result = SecurityValidator.validate(url)
+                        val result = SecurityValidator.validate(currentUrl)
                         if (!result.isSafe && result.riskLevel == SecurityValidator.RiskLevel.HIGH) {
                             activity?.runOnUiThread {
-                                showSecurityWarning(url, result.reason)
+                                showSecurityWarning(currentUrl, result.reason)
                             }
                         }
                     }
@@ -177,11 +168,11 @@ class BrowserFragment : Fragment() {
 
         tab.session.contentDelegate = object : GeckoSession.ContentDelegate {
             override fun onTitleChange(session: GeckoSession, title: String?) {
-                val url = session.currentUri ?: ""
-                viewModel.updateCurrentTab(url, title ?: url, viewModel.loadingProgress.value ?: 0, viewModel.isLoading.value ?: false)
+                currentTitle = title ?: currentUrl
+                viewModel.updateCurrentTab(currentUrl, currentTitle, viewModel.loadingProgress.value ?: 0, viewModel.isLoading.value ?: false)
             }
 
-            override fun onExternalResponse(session: GeckoSession, response: org.mozilla.geckoview.WebResponse) {
+            override fun onExternalResponse(session: GeckoSession, response: WebResponse) {
                 val url = response.uri
                 val filename = extractFilename(url, response.headers)
                 activity?.runOnUiThread {
@@ -193,7 +184,8 @@ class BrowserFragment : Fragment() {
         tab.session.navigationDelegate = object : GeckoSession.NavigationDelegate {
             override fun onLocationChange(session: GeckoSession, url: String?) {
                 url?.let {
-                    viewModel.updateCurrentTab(it, session.title ?: it, viewModel.loadingProgress.value ?: 0, viewModel.isLoading.value ?: false)
+                    currentUrl = it
+                    viewModel.updateCurrentTab(it, currentTitle, viewModel.loadingProgress.value ?: 0, viewModel.isLoading.value ?: false)
                 }
             }
 
@@ -207,12 +199,12 @@ class BrowserFragment : Fragment() {
 
             override fun onLoadRequest(
                 session: GeckoSession,
-                request: org.mozilla.geckoview.GeckoSession.NavigationDelegate.LoadRequest
-            ): GeckoSession.NavigationDelegate.LoadRequest? {
+                request: GeckoSession.NavigationDelegate.LoadRequest
+            ): GeckoResult<GeckoSession.NavigationDelegate.AllowOrDeny>? {
                 if (viewModel.settings.adBlockEnabled && adBlocker.isBlocked(request.uri)) {
-                    return null
+                    return GeckoResult.fromValue(GeckoSession.NavigationDelegate.AllowOrDeny.DENY)
                 }
-                return request
+                return GeckoResult.fromValue(GeckoSession.NavigationDelegate.AllowOrDeny.ALLOW)
             }
         }
     }
@@ -287,8 +279,8 @@ class BrowserFragment : Fragment() {
     private fun showCookieManager() {
         val url = viewModel.currentUrl.value ?: return
         AlertDialog.Builder(requireContext())
-            .setTitle("Cookie 管理")
-            .setMessage("当前网站: $url\n\nCookie 数量: 0\n\n此功能允许查看和编辑当前网站的所有 Cookie。")
+            .setTitle("Cookie管理")
+            .setMessage("URL: $url\n\nCookie数量：0\n\n（Cookie查看功能开发中）")
             .setPositiveButton("确定", null)
             .show()
     }
@@ -296,7 +288,7 @@ class BrowserFragment : Fragment() {
     private fun showDevToolsInfo() {
         AlertDialog.Builder(requireContext())
             .setTitle("开发者工具")
-            .setMessage("远程调试已启用\n\n调试地址：chrome://inspect\n\n可通过 USB 连接电脑进行元素查看和远程调试。")
+            .setMessage("远程调试地址：chrome://inspect\n\n元素查看、网络监控、控制台等功能可通过远程调试使用。")
             .setPositiveButton("确定", null)
             .show()
     }
@@ -309,11 +301,7 @@ class BrowserFragment : Fragment() {
             putExtra(Intent.EXTRA_SUBJECT, title)
             putExtra(Intent.EXTRA_TEXT, "$title\n$url")
         }
-        startActivity(Intent.createChooser(intent, "分享网页"))
-    }
-
-    private fun getColor(resId: Int): Int {
-        return requireContext().getColor(resId)
+        startActivity(Intent.createChooser(intent, "分享"))
     }
 
     override fun onDestroyView() {

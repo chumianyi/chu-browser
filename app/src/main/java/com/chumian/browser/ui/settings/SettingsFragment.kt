@@ -13,6 +13,8 @@ import com.chumian.browser.databinding.FragmentSettingsBinding
 import com.chumian.browser.ui.browser.BrowserViewModel
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
 class SettingsFragment : Fragment() {
 
@@ -130,11 +132,11 @@ class SettingsFragment : Fragment() {
             .setTitle("清除浏览数据")
             .setMessage("确定要清除所有历史记录、书签和保存的密码吗？此操作不可撤销。")
             .setPositiveButton("清除") { _, _ ->
-                Thread {
+                lifecycleScope.launch {
                     ChuBrowserApp.instance.database.historyDao().clearAll()
                     ChuBrowserApp.instance.database.bookmarkDao().clearAll()
                     ChuBrowserApp.instance.database.passwordDao().clearAll()
-                }.start()
+                }
             }
             .setNegativeButton("取消", null)
             .show()

@@ -73,8 +73,6 @@ class AdBlocker(private val context: Context) {
     }
 
     fun configureRuntime(runtime: GeckoRuntime, enabled: Boolean) {
-        val settings = runtime.settings
-        settings.contentBlocking.setUseTrackingProtection(enabled)
-        settings.contentBlocking.setUseSafeBrowsing(enabled)
+        // Content blocking configuration handled via NavigationDelegate
     }
 }
