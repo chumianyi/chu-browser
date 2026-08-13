@@ -1,0 +1,461 @@
+<resources>
+    <string name="app_name">Chu浏览器</string>
+    <string name="app_name_short">Chu</string>
+
+    <!-- 通用 -->
+    <string name="ok">确定</string>
+    <string name="cancel">取消</string>
+    <string name="delete">删除</string>
+    <string name="edit">编辑</string>
+    <string name="save">保存</string>
+    <string name="close">关闭</string>
+    <string name="back">返回</string>
+    <string name="forward">前进</string>
+    <string name="refresh">刷新</string>
+    <string name="stop">停止</string>
+    <string name="search">搜索</string>
+    <string name="settings">设置</string>
+    <string name="loading">加载中…</string>
+    <string name="error">错误</string>
+    <string name="success">成功</string>
+    <string name="failed">失败</string>
+    <string name="empty">暂无数据</string>
+    <string name="confirm">确认</string>
+    <string name="dismiss">忽略</string>
+    <string name="retry">重试</string>
+    <string name="copy">复制</string>
+    <string name="copied">已复制</string>
+    <string name="paste">粘贴</string>
+    <string name="share">分享</string>
+    <string name="open">打开</string>
+    <string name="more">更多</string>
+    <string name="all">全部</string>
+    <string name="none">无</string>
+    <string name="default">默认</string>
+    <string name="custom">自定义</string>
+    <string name="enabled">已启用</string>
+    <string name="disabled">已禁用</string>
+    <string name="enable">启用</string>
+    <string name="disable">禁用</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
+
+    <!-- 浏览器 -->
+    <string name="address_bar_hint">搜索或输入网址</string>
+    <string name="new_tab">新标签页</string>
+    <string name="close_tab">关闭标签页</string>
+    <string name="close_all_tabs">关闭所有标签页</string>
+    <string name="tabs">标签页</string>
+    <string name="tab_count">%1$d 个标签页</string>
+    <string name="home">主页</string>
+    <string name="bookmarks">书签</string>
+    <string name="history">历史记录</string>
+    <string name="downloads">下载</string>
+    <string name="share_page">分享页面</string>
+    <string name="find_in_page">页面内查找</string>
+    <string name="add_bookmark">添加书签</string>
+    <string name="bookmark_added">已添加书签</string>
+    <string name="bookmark_exists">书签已存在</string>
+    <string name="desktop_site">桌面版网站</string>
+    <string name="print">打印</string>
+    <string name="translate">翻译</string>
+    <string name="read_mode">阅读模式</string>
+    <string name="fullscreen">全屏</string>
+    <string name="exit_fullscreen">退出全屏</string>
+    <string name="page_info">页面信息</string>
+    <string name="site_settings">网站设置</string>
+    <string name="report_issue">反馈问题</string>
+    <string name="quit">退出</string>
+
+    <!-- 广告拦截 -->
+    <string name="ad_block">广告拦截</string>
+    <string name="ad_block_enabled">广告拦截已启用</string>
+    <string name="ad_block_disabled">广告拦截已禁用</string>
+    <string name="ad_block_count">已拦截 %1$d 个广告</string>
+    <string name="ad_block_settings">广告拦截设置</string>
+    <string name="ad_block_list">广告拦截规则</string>
+    <string name="update_filters">更新过滤规则</string>
+    <string name="whitelist">白名单</string>
+    <string name="add_to_whitelist">添加到白名单</string>
+    <string name="remove_from_whitelist">从白名单移除</string>
+
+    <!-- 安全 -->
+    <string name="security">安全</string>
+    <string name="security_check">安全检测</string>
+    <string name="security_checking">正在安全检测…</string>
+    <string name="security_safe">网站安全</string>
+    <string name="security_warning">网站存在风险</string>
+    <string name="security_danger">网站危险，已拦截</string>
+    <string name="security_unknown">未知安全状态</string>
+    <string name="malware_detected">检测到恶意软件</string>
+    <string name="phishing_detected">检测到钓鱼网站</string>
+    <string name="insecure_connection">不安全的连接</string>
+    <string name="ssl_error">SSL证书错误</string>
+    <string name="proceed_anyway">仍然继续</string>
+    <string name="go_back">返回安全</string>
+    <string name="security_report">安全报告</string>
+    <string name="web_detector">网页检测拦截器</string>
+    <string name="web_detector_enabled">网页检测已启用</string>
+
+    <!-- 密码管理器 -->
+    <string name="password_manager">密码管理器</string>
+    <string name="save_password">保存密码</string>
+    <string name="password_saved">密码已保存</string>
+    <string name="username">用户名</string>
+    <string name="password">密码</string>
+    <string name="website">网站</string>
+    <string name="generate_password">生成强密码</string>
+    <string name="strong_password">强密码</string>
+    <string name="password_length">密码长度</string>
+    <string name="include_uppercase">包含大写字母</string>
+    <string name="include_lowercase">包含小写字母</string>
+    <string name="include_numbers">包含数字</string>
+    <string name="include_symbols">包含符号</string>
+    <string name="auto_fill">自动填充</string>
+    <string name="auto_fill_enabled">自动填充已启用</string>
+    <string name="delete_password">删除密码</string>
+    <string name="edit_password">编辑密码</string>
+    <string name="view_password">查看密码</string>
+    <string name="hide_password">隐藏密码</string>
+    <string name="password_strength">密码强度</string>
+    <string name="password_weak">弱</string>
+    <string name="password_medium">中</string>
+    <string name="password_strong">强</string>
+    <string name="password_very_strong">非常强</string>
+    <string name="no_saved_passwords">暂无保存的密码</string>
+    <string name="search_passwords">搜索密码</string>
+    <string name="unlock_passwords">解锁密码管理器</string>
+    <string name="master_password">主密码</string>
+    <string name="confirm_master_password">确认主密码</string>
+    <string name="set_master_password">设置主密码</string>
+    <string name="change_master_password">修改主密码</string>
+    <string name="wrong_master_password">主密码错误</string>
+
+    <!-- 验证码 -->
+    <string name="captcha_detected">检测到验证码</string>
+    <string name="captcha_recognizing">正在识别验证码…</string>
+    <string name="captcha_recognized">验证码识别完成</string>
+    <string name="captcha_failed">验证码识别失败</string>
+    <string name="captcha_auto_fill">自动填充验证码</string>
+    <string name="captcha_code">验证码：%1$s</string>
+
+    <!-- 证书 -->
+    <string name="certificate_info">证书信息</string>
+    <string name="certificate_valid">证书有效</string>
+    <string name="certificate_invalid">证书无效</string>
+    <string name="certificate_expired">证书已过期</string>
+    <string name="issuer">颁发者</string>
+    <string name="subject">主体</string>
+    <string name="valid_from">生效时间</string>
+    <string name="valid_to">到期时间</string>
+    <string name="serial_number">序列号</string>
+    <string name="signature_algorithm">签名算法</string>
+    <string name="public_key">公钥</string>
+    <string name="fingerprint">指纹</string>
+    <string name="sha256_fingerprint">SHA-256 指纹</string>
+    <string name="sha1_fingerprint">SHA-1 指纹</string>
+    <string name="certificate_details">证书详情</string>
+
+    <!-- Cookie -->
+    <string name="cookie_manager">Cookie管理</string>
+    <string name="cookies">Cookie</string>
+    <string name="cookie_name">名称</string>
+    <string name="cookie_value">值</string>
+    <string name="cookie_domain">域名</string>
+    <string name="cookie_path">路径</string>
+    <string name="cookie_expires">过期时间</string>
+    <string name="cookie_secure">安全</string>
+    <string name="cookie_http_only">仅HTTP</string>
+    <string name="cookie_same_site">SameSite</string>
+    <string name="delete_cookie">删除Cookie</string>
+    <string name="delete_all_cookies">删除所有Cookie</string>
+    <string name="block_third_party_cookies">阻止第三方Cookie</string>
+    <string name="accept_cookies">接受Cookie</string>
+    <string name="no_cookies">该网站没有Cookie</string>
+
+    <!-- 开发者工具 -->
+    <string name="developer_tools">开发者工具</string>
+    <string name="dev_tools_enabled">开发者工具已启用</string>
+    <string name="inspect_element">检查元素</string>
+    <string name="console">控制台</string>
+    <string name="network">网络</string>
+    <string name="sources">源代码</string>
+    <string name="performance">性能</string>
+    <string name="application">应用</string>
+    <string name="security_tab">安全</string>
+    <string name="remote_debugging">远程调试</string>
+    <string name="user_agent">User-Agent</string>
+    <string name="clear_cache">清除缓存</string>
+    <string name="cache_cleared">缓存已清除</string>
+    <string name="view_source">查看源代码</string>
+    <string name="javascript_console">JavaScript控制台</string>
+    <string name="execute_js">执行JavaScript</string>
+    <string name="js_result">执行结果</string>
+
+    <!-- 隐私 -->
+    <string name="privacy">隐私</string>
+    <string name="privacy_mode">隐私模式</string>
+    <string name="privacy_space">隐私隔离空间</string>
+    <string name="privacy_isolation">隐私隔离</string>
+    <string name="privacy_isolation_enabled">隐私隔离已启用</string>
+    <string name="new_privacy_space">新建隐私空间</string>
+    <string name="privacy_space_name">隐私空间名称</string>
+    <string name="delete_privacy_space">删除隐私空间</string>
+    <string name="privacy_space_locked">隐私空间已锁定</string>
+    <string name="unlock_privacy_space">解锁隐私空间</string>
+    <string name="do_not_track">请勿跟踪</string>
+    <string name="block_trackers">阻止跟踪器</string>
+    <string name="clear_browsing_data">清除浏览数据</string>
+    <string name="clear_history">清除历史记录</string>
+    <string name="clear_cache_data">清除缓存</string>
+    <string name="clear_cookies_data">清除Cookie</string>
+    <string name="clear_passwords">清除已保存密码</string>
+    <string name="clear_bookmarks">清除书签</string>
+    <string name="clear_all">全部清除</string>
+    <string name="data_cleared">数据已清除</string>
+    <string name="fingerprint_protection">指纹保护</string>
+    <string name="webrtc_leak_protection">WebRTC泄漏保护</string>
+    <string name="block_popups">阻止弹窗</string>
+
+    <!-- 下载 -->
+    <string name="download">下载</string>
+    <string name="downloading">正在下载</string>
+    <string name="download_paused">下载已暂停</string>
+    <string name="download_completed">下载完成</string>
+    <string name="download_failed">下载失败</string>
+    <string name="download_canceled">下载已取消</string>
+    <string name="download_confirm">确认下载</string>
+    <string name="download_confirm_message">是否下载 %1$s？\n大小：%2$s</string>
+    <string name="download_progress">下载进度：%1$d%%</string>
+    <string name="download_speed">下载速度：%1$s/s</string>
+    <string name="download_size">文件大小：%1$s</string>
+    <string name="download_remaining">剩余时间：%1$s</string>
+    <string name="pause_download">暂停下载</string>
+    <string name="resume_download">继续下载</string>
+    <string name="cancel_download">取消下载</string>
+    <string name="retry_download">重新下载</string>
+    <string name="open_file">打开文件</string>
+    <string name="open_folder">打开文件夹</string>
+    <string name="delete_download">删除下载</string>
+    <string name="download_location">下载位置</string>
+    <string name="no_downloads">暂无下载记录</string>
+    <string name="download_notification_title">正在下载：%1$s</string>
+
+    <!-- 设置 -->
+    <string name="general_settings">通用设置</string>
+    <string name="search_engine">默认搜索引擎</string>
+    <string name="search_engine_bing">Bing</string>
+    <string name="search_engine_google">Google</string>
+    <string name="search_engine_baidu">百度</string>
+    <string name="search_engine_duckduckgo">DuckDuckGo</string>
+    <string name="search_engine_yahoo">Yahoo</string>
+    <string name="search_engine_custom">自定义</string>
+    <string name="homepage">主页</string>
+    <string name="homepage_default">默认主页</string>
+    <string name="homepage_custom">自定义主页</string>
+    <string name="homepage_blank">空白页</string>
+    <string name="theme">主题</string>
+    <string name="theme_light">浅色</string>
+    <string name="theme_dark">深色</string>
+    <string name="theme_system">跟随系统</string>
+    <string name="font_size">字体大小</string>
+    <string name="font_size_small">小</string>
+    <string name="font_size_medium">中</string>
+    <string name="font_size_large">大</string>
+    <string name="font_size_huge">特大</string>
+    <string name="text_encoding">文本编码</string>
+    <string name="language">语言</string>
+
+    <!-- 关于 -->
+    <string name="about">关于</string>
+    <string name="about_chu_browser">关于Chu浏览器</string>
+    <string name="version">版本</string>
+    <string name="version_name">%1$s (%2$d)</string>
+    <string name="engine">内核</string>
+    <string name="geckoview_engine">Mozilla GeckoView (Firefox)</string>
+    <string name="open_source">开源协议</string>
+    <string name="gpl_license">GNU General Public License v3.0</string>
+    <string name="source_code">源代码</string>
+    <string name="license">许可证</string>
+    <string name="privacy_policy">隐私政策</string>
+    <string name="terms_of_service">服务条款</string>
+    <string name="check_update">检查更新</string>
+    <string name="rate_app">评价应用</string>
+    <string name="feedback">意见反馈</string>
+    <string name="donate">捐赠支持</string>
+
+    <!-- 权限 -->
+    <string name="permission_required">需要权限</string>
+    <string name="permission_storage">存储权限用于下载文件</string>
+    <string name="permission_camera">相机权限用于扫描二维码和识别验证码</string>
+    <string name="permission_location">位置权限用于网站定位服务</string>
+    <string name="permission_microphone">麦克风权限用于语音输入</string>
+    <string name="permission_notification">通知权限用于下载提醒</string>
+    <string name="permission_grant">授予权限</string>
+    <string name="permission_denied">权限被拒绝</string>
+    <string name="permission_rationale">此功能需要相应权限才能正常工作</string>
+
+    <!-- 启动权限 -->
+    <string name="startup_permission_title">欢迎使用Chu浏览器</string>
+    <string name="startup_permission_message">为了提供完整的浏览体验，我们需要以下权限：</string>
+    <string name="startup_permission_grant_all">全部授权</string>
+    <string name="startup_permission_skip">跳过</string>
+    <string name="startup_permission_later">稍后再说</string>
+
+    <!-- 标签页 -->
+    <string name="new_tab_title">新标签页</string>
+    <string name="private_tab">隐私标签页</string>
+    <string name="close_other_tabs">关闭其他标签页</string>
+    <string name="close_tabs_to_right">关闭右侧标签页</string>
+    <string name="reopen_closed_tab">恢复关闭的标签页</string>
+    <string name="tab_preview">标签页预览</string>
+    <string name="merge_tabs">合并标签页</string>
+    <string name="move_to_privacy">移至隐私空间</string>
+
+    <!-- 书签 -->
+    <string name="add_bookmark_title">添加书签</string>
+    <string name="bookmark_title">标题</string>
+    <string name="bookmark_url">网址</string>
+    <string name="bookmark_folder">文件夹</string>
+    <string name="bookmark_folder_default">默认文件夹</string>
+    <string name="new_folder">新建文件夹</string>
+    <string name="edit_bookmark">编辑书签</string>
+    <string name="delete_bookmark">删除书签</string>
+    <string name="bookmark_sort">排序方式</string>
+    <string name="bookmark_sort_name">按名称</string>
+    <string name="bookmark_sort_time">按时间</string>
+    <string name="bookmark_sort_url">按网址</string>
+    <string name="import_bookmarks">导入书签</string>
+    <string name="export_bookmarks">导出书签</string>
+    <string name="no_bookmarks">暂无书签</string>
+
+    <!-- 历史 -->
+    <string name="clear_history_confirm">确定要清除所有历史记录吗？</string>
+    <string name="history_today">今天</string>
+    <string name="history_yesterday">昨天</string>
+    <string name="history_this_week">本周</string>
+    <string name="history_this_month">本月</string>
+    <string name="history_older">更早</string>
+    <string name="no_history">暂无历史记录</string>
+
+    <!-- 错误页面 -->
+    <string name="error_page_title">无法访问此网站</string>
+    <string name="error_page_message">检查您的网络连接，然后重试。</string>
+    <string name="error_ssl_title">您的连接不是私密连接</string>
+    <string name="error_ssl_message">攻击者可能会试图从该网站窃取您的信息。</string>
+    <string name="error_timeout_title">连接超时</string>
+    <string name="error_timeout_message">服务器响应时间过长。</string>
+    <string name="error_not_found_title">网页未找到</string>
+    <string name="error_not_found_message">您请求的页面不存在。</string>
+
+    <!-- 进度 -->
+    <string name="loading_progress">加载中 %1$d%%</string>
+    <string name="page_loaded">页面加载完成</string>
+
+    <!-- 快捷方式 -->
+    <string name="shortcut_new_tab">新建标签页</string>
+    <string name="shortcut_private">隐私浏览</string>
+    <string name="shortcut_bookmarks">书签</string>
+    <string name="shortcut_history">历史记录</string>
+
+    <!-- 搜索建议 -->
+    <string name="search_suggestions">搜索建议</string>
+    <string name="no_suggestions">暂无建议</string>
+
+    <!-- 文件选择 -->
+    <string name="select_file">选择文件</string>
+    <string name="take_photo">拍照</string>
+    <string name="choose_from_gallery">从相册选择</string>
+
+    <!-- 地理位置 -->
+    <string name="location_permission_request">%1$s 请求获取您的位置信息</string>
+    <string name="location_allow">允许</string>
+    <string name="location_deny">拒绝</string>
+
+    <!-- 通知 -->
+    <string name="notification_permission_request">%1$s 请求发送通知</string>
+    <string name="notification_allow">允许</string>
+    <string name="notification_deny">拒绝</string>
+
+    <!-- 媒体 -->
+    <string name="media_permission_request">%1$s 请求使用您的摄像头和麦克风</string>
+    <string name="media_allow">允许</string>
+    <string name="media_deny">拒绝</string>
+
+    <!-- 全屏 -->
+    <string name="fullscreen_request">%1$s 请求进入全屏模式</string>
+    <string name="fullscreen_allow">允许</string>
+    <string name="fullscreen_deny">拒绝</string>
+
+    <!-- 自动填充 -->
+    <string name="auto_fill_credentials">使用保存的凭据登录</string>
+    <string name="auto_fill_username">用户名：%1$s</string>
+    <string name="auto_fill_password">密码：%1$s</string>
+    <string name="auto_fill_use">使用</string>
+    <string name="auto_fill_cancel">取消</string>
+
+    <!-- 强密码生成 -->
+    <string name="generated_password">已生成强密码</string>
+    <string name="use_generated_password">使用此密码</string>
+    <string name="regenerate_password">重新生成</string>
+    <string name="password_length_32">32位</string>
+    <string name="password_length_64">64位</string>
+    <string name="password_length_128">128位</string>
+    <string name="password_length_256">256位</string>
+    <string name="password_length_512">512位</string>
+
+    <!-- 隐私空间 -->
+    <string name="privacy_space_description">每个隐私空间拥有独立的Cookie、缓存、历史记录和存储</string>
+    <string name="privacy_space_create">创建隐私空间</string>
+    <string name="privacy_space_name_hint">输入空间名称</string>
+    <string name="privacy_space_password">空间密码</string>
+    <string name="privacy_space_password_hint">设置空间密码（可选）</string>
+    <string name="privacy_space_created">隐私空间已创建</string>
+    <string name="privacy_space_deleted">隐私空间已删除</string>
+    <string name="privacy_space_delete_confirm">确定要删除此隐私空间吗？所有数据将被清除。</string>
+    <string name="privacy_space_list">隐私空间列表</string>
+    <string name="privacy_space_current">当前空间</string>
+    <string name="privacy_space_switch">切换空间</string>
+
+    <!-- 安全检测详情 -->
+    <string name="security_score">安全评分</string>
+    <string name="security_check_items">检测项</string>
+    <string name="security_ssl_valid">SSL证书有效</string>
+    <string name="security_https">HTTPS加密</string>
+    <string name="security_no_malware">无恶意软件</string>
+    <string name="security_no_phishing">无钓鱼行为</string>
+    <string name="security_no_tracking">无跟踪器</string>
+    <string name="security_domain_age">域名注册时间</string>
+    <string name="security_reputation">网站信誉</string>
+    <string name="security_pass">通过</string>
+    <string name="security_fail">未通过</string>
+    <string name="security_warning_item">警告</string>
+
+    <!-- 开发者工具详情 -->
+    <string name="devtools_console_log">控制台日志</string>
+    <string name="devtools_console_error">错误</string>
+    <string name="devtools_console_warning">警告</string>
+    <string name="devtools_console_info">信息</string>
+    <string name="devtools_console_debug">调试</string>
+    <string name="devtools_network_requests">网络请求</string>
+    <string name="devtools_network_status">状态</string>
+    <string name="devtools_network_type">类型</string>
+    <string name="devtools_network_size">大小</string>
+    <string name="devtools_network_time">时间</string>
+    <string name="devtools_clear_log">清除日志</string>
+    <string name="devtools_export_log">导出日志</string>
+
+    <!-- 其他 -->
+    <string name="exit_confirm">再按一次退出</string>
+    <string name="exit_app">退出应用</string>
+    <string name="restart_app">重启应用</string>
+    <string name="app_restart_required">需要重启应用以使更改生效</string>
+    <string name="restart_now">立即重启</string>
+    <string name="restart_later">稍后重启</string>
+    <string name="unknown">未知</string>
+    <string name="bytes">B</string>
+    <string name="kilobytes">KB</string>
+    <string name="megabytes">MB</string>
+    <string name="gigabytes">GB</string>
+
+</resources>

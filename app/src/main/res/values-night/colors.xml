@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background_light">#121212</color>
+    <color name="surface_light">#1E1E1E</color>
+    <color name="text_primary_light">#FFFFFF</color>
+    <color name="text_secondary_light">#B0B0B0</color>
+    <color name="divider_light">#424242</color>
+    <color name="tab_background">#2A2A2A</color>
+    <color name="url_bar_bg">#2A2A2A</color>
+    <color name="free_banner_bg">#3E2723</color>
+    <color name="free_banner_text">#FFCC80</color>
+</resources>

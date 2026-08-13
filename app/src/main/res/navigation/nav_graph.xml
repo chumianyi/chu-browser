@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/browserFragment">
+
+    <fragment
+        android:id="@+id/browserFragment"
+        android:name="com.chumian.browser.ui.browser.BrowserFragment"
+        android:label="浏览器" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.chumian.browser.ui.settings.SettingsFragment"
+        android:label="设置" />
+
+    <fragment
+        android:id="@+id/bookmarksFragment"
+        android:name="com.chumian.browser.ui.bookmarks.BookmarksFragment"
+        android:label="书签" />
+
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.chumian.browser.ui.history.HistoryFragment"
+        android:label="历史记录" />
+
+    <fragment
+        android:id="@+id/downloadsFragment"
+        android:name="com.chumian.browser.ui.downloads.DownloadsFragment"
+        android:label="下载管理" />
+
+    <fragment
+        android:id="@+id/passwordsFragment"
+        android:name="com.chumian.browser.ui.passwords.PasswordsFragment"
+        android:label="密码管理" />
+
+    <fragment
+        android:id="@+id/tabsFragment"
+        android:name="com.chumian.browser.ui.tabs.TabsFragment"
+        android:label="标签页" />
+
+    <fragment
+        android:id="@+id/privacyFragment"
+        android:name="com.chumian.browser.ui.privacy.PrivacyFragment"
+        android:label="隐私隔离" />
+
+</navigation>
