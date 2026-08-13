@@ -1,7 +1,9 @@
-name: Build APK
+name: Build Chu Browser
 
 on:
   push:
+    branches: [ main ]
+  pull_request:
     branches: [ main ]
   workflow_dispatch:
 
@@ -16,8 +18,18 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
           java-version: '17'
+          distribution: 'temurin'
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -25,8 +37,30 @@ jobs:
       - name: Build Release APK
         run: ./gradlew assembleRelease --stacktrace
 
-      - name: Upload APK
+      - name: Find APK
+        run: find app/build/outputs -name "*.apk" -type f
+
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ChuBrowser-release
+          name: chu-browser-release
           path: app/build/outputs/apk/release/*.apk
+          retention-days: 30
+
+      - name: Create Release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.0
+          name: Chu Browser v1.0.0
+          body: |
+            Chu Browser - 基于Mozilla GeckoView的Android浏览器
+            - Firefox内核
+            - 广告拦截
+            - 密码管理器
+            - 安全检测
+            - 隐私隔离空间
+            - 开发者工具
+          files: app/build/outputs/apk/release/*.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

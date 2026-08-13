@@ -49,21 +49,17 @@
 #
 #       Where the inherited environment variables (DEFAULT_JVM_OPTS, JAVA_OPTS,
 #       and GRADLE_OPTS) rely on word-splitting, this is performed
-#       explicitly; see below for details.
+#       explicitly; see the definitions of the variables APP_HOME and
+#       APP_ARGS below, and the loop at the bottom of the file.
 #
-#       There are trays of "optional" arguments added to $@, and
-#       there is special handling for the classpath. There may be more
-#       in future, so please try to avoid customizing this script in such a
-#       way as to break further upgrade to newer versions of Gradle.
+#   (3) This is the entry point, but the actual work is done in the function
+#       «main», which is defined at the bottom of the file.
 #
 ##############################################################################
 
 # Attempt to set APP_HOME
-
 # Resolve links: $0 may be a link
 app_path=$0
-
-# Need this for daisy-chained symlinks.
 while
     APP_HOME=${app_path%"${app_path##*/}"}  # leaves a trailing /; empty if no leading path
     [ -h "$app_path" ]
@@ -108,7 +104,6 @@ case "$( uname )" in                #(
 esac
 
 CLASSPATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar
-
 
 # Determine the Java command to use to start the JVM.
 if [ -n "$JAVA_HOME" ] ; then
@@ -185,17 +180,19 @@ if "$cygwin" || "$msys" ; then
         # args, so each arg winds up back in the position where it started, but
         # possibly modified.
         #
-        # NB: a `for` loop captures its iteration list before it begins, so
-        # changing the positional parameters here affects neither the number of
-        # iterations, nor the values presented in `arg`.
-        shift                   # remove old arg
-        set -- "$@" "$arg"      # push replacement arg
+        # NB: a `for` loop captures its mutation only at the moment of iteration,
+        # so if we shift the first arg during the second mutation, then the rest
+        # of the loop has to skip the first arg, but that's fine because the
+        # first arg has already been processed.
+        #
+        # We cannot just `set -- $args` because doing so would reset the args
+        # list, losing the original arguments. Instead, we use the `set --`
+        # command with the original arguments, then shift the first arg, then
+        # append the modified arg to the end.
+        shift
+        set -- "$@" "$arg"
     done
 fi
-
-
-# Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
-DEFAULT_JVM_OPTS='"-Xmx64m" "-Xms64m"'
 
 # Collect all arguments for the java command;
 #   * $DEFAULT_JVM_OPTS, $JAVA_OPTS, and $GRADLE_OPTS can contain fragments of
@@ -230,7 +227,8 @@ fi
 # that process (while maintaining the separation between arguments), and wrap
 # the whole thing up as a single "set" statement.
 #
-# This will of course break if any of these variables contains a newline (unintended).
+# This will of course break if any of these variables contains a newline (unlikely?), or if the user has
+# somehow managed to set IFS to something weird.
 #
 eval "set -- $(
         printf '%s\n' "$DEFAULT_JVM_OPTS $JAVA_OPTS $GRADLE_OPTS" |
