@@ -1,27 +1,381 @@
 package com.chumian.browser.ui
 
+import android.Manifest
+import android.app.DownloadManager
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.KeyEvent
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.webkit.URLUtil
+import android.widget.EditText
+import android.widget.ProgressBar
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.fragment.NavHostFragment
+import androidx.core.content.ContextCompat
 import com.chumian.browser.R
+import com.chumian.browser.adblock.AdBlocker
+import com.chumian.browser.security.SecurityValidator
+import com.chumian.browser.util.SettingsManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.appbar.MaterialToolbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.mozilla.geckoview.GeckoRuntime
+import org.mozilla.geckoview.GeckoSession
+import org.mozilla.geckoview.GeckoView
+import org.mozilla.geckoview.ContentBlocking
+import org.mozilla.geckoview.GeckoRuntimeSettings
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var geckoView: GeckoView
+    private lateinit var geckoSession: GeckoSession
+    private lateinit var geckoRuntime: GeckoRuntime
+    private lateinit var addressBar: EditText
+    private lateinit var progressBar: ProgressBar
+    private lateinit var toolbar: MaterialToolbar
+    private lateinit var bottomNav: BottomNavigationView
+    private lateinit var settingsManager: SettingsManager
+    private lateinit var adBlocker: AdBlocker
+    private lateinit var securityValidator: SecurityValidator
+
+    private val permissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val granted = permissions.entries.all { it.value }
+        if (!granted) {
+            Toast.makeText(this, "部分权限未授予，可能影响功能使用", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val navHostFragment = supportFragmentManager
-            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        navHostFragment.navController
+        settingsManager = SettingsManager(this)
+        adBlocker = AdBlocker(this)
+        securityValidator = SecurityValidator(this)
+
+        toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
+        addressBar = findViewById(R.id.addressBar)
+        progressBar = findViewById(R.id.progressBar)
+        geckoView = findViewById(R.id.geckoView)
+        bottomNav = findViewById(R.id.bottomNav)
+
+        requestStartupPermissions()
+        setupGeckoView()
+        setupAddressBar()
+        setupBottomNav()
+
+        if (savedInstanceState == null) {
+            loadUrl(settingsManager.getHomepage())
+        }
     }
 
-    override fun onBackPressed() {
-        val navHostFragment = supportFragmentManager
-            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
-        if (!navController.popBackStack()) {
-            super.onBackPressed()
+    private fun requestStartupPermissions() {
+        val permissions = mutableListOf<String>()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissions.add(Manifest.permission.POST_NOTIFICATIONS)
         }
+        permissions.add(Manifest.permission.ACCESS_NETWORK_STATE)
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+            permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
+
+        val needed = permissions.filter {
+            ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
+        }
+        if (needed.isNotEmpty()) {
+            permissionLauncher.launch(needed.toTypedArray())
+        }
+    }
+
+    private fun setupGeckoView() {
+        val runtimeSettings = GeckoRuntimeSettings.Builder()
+            .javaScriptEnabled(true)
+            .domStorageEnabled(true)
+            .webFontsEnabled(true)
+            .hardwareAccelerationEnabled(true)
+            .trackingProtectionMode(if (adBlocker.isAdBlockEnabled())
+                GeckoRuntimeSettings.TRACKING_PROTECTION_STRICT
+            else
+                GeckoRuntimeSettings.TRACKING_PROTECTION_OFF)
+            .remoteDebuggingEnabled(settingsManager.isDevToolsEnabled())
+            .consoleOutputEnabled(true)
+            .build()
+
+        geckoRuntime = GeckoRuntime.create(this, runtimeSettings)
+        geckoSession = GeckoSession()
+        geckoSession.open(geckoRuntime)
+        geckoView.setSession(geckoSession)
+
+        geckoSession.progressDelegate = object : GeckoSession.ProgressDelegate {
+            override fun onPageStart(session: GeckoSession, url: String) {
+                progressBar.visibility = View.VISIBLE
+                progressBar.progress = 0
+                addressBar.setText(url)
+            }
+
+            override fun onPageStop(session: GeckoSession, success: Boolean) {
+                progressBar.visibility = View.GONE
+            }
+
+            override fun onProgressChange(session: GeckoSession, progress: Int) {
+                progressBar.progress = progress
+            }
+
+            override fun onSecurityChange(
+                session: GeckoSession,
+                securityInfo: GeckoSession.ProgressDelegate.SecurityInformation?
+            ) {
+            }
+        }
+
+        geckoSession.contentDelegate = object : GeckoSession.ContentDelegate {
+            override fun onTitleChange(session: GeckoSession, title: String?) {
+                toolbar.title = title ?: "Chu浏览器"
+            }
+
+            override fun onLocationChange(session: GeckoSession, url: String?) {
+                url?.let { addressBar.setText(it) }
+            }
+        }
+
+        geckoSession.navigationDelegate = object : GeckoSession.NavigationDelegate {
+            override fun onLoadRequest(
+                session: GeckoSession,
+                request: GeckoSession.NavigationDelegate.LoadRequest
+            ): GeckoResult<GeckoSession.NavigationDelegate.LoadRequest>? {
+                val url = request.uri
+                if (securityValidator.shouldBlock(url)) {
+                    showBlockedWarning(url)
+                    return GeckoResult.fromValue(null)
+                }
+                return null
+            }
+
+            override fun onNewSession(
+                session: GeckoSession,
+                uri: String
+            ): GeckoResult<GeckoSession>? {
+                loadUrl(uri)
+                return null
+            }
+        }
+
+        geckoSession.downloadDelegate = object : GeckoSession.DownloadDelegate {
+            override fun onDownload(
+                session: GeckoSession,
+                download: GeckoSession.DownloadDelegate.Download
+            ) {
+                showDownloadConfirm(download)
+            }
+        }
+    }
+
+    private fun setupAddressBar() {
+        addressBar.setOnKeyListener { _, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                val input = addressBar.text.toString().trim()
+                if (input.isNotEmpty()) {
+                    loadUrl(input)
+                }
+                true
+            } else false
+        }
+    }
+
+    private fun setupBottomNav() {
+        bottomNav.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_back -> {
+                    if (geckoSession.canGoBack()) {
+                        geckoSession.goBack()
+                    }
+                    true
+                }
+                R.id.nav_forward -> {
+                    if (geckoSession.canGoForward()) {
+                        geckoSession.goForward()
+                    }
+                    true
+                }
+                R.id.nav_home -> {
+                    loadUrl(settingsManager.getHomepage())
+                    true
+                }
+                R.id.nav_tabs -> {
+                    Toast.makeText(this, "标签页管理", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                R.id.nav_menu -> {
+                    showMenuDialog()
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
+    private fun loadUrl(input: String) {
+        val url = if (URLUtil.isNetworkUrl(input)) {
+            input
+        } else if (input.contains(".") && !input.contains(" ")) {
+            "https://$input"
+        } else {
+            settingsManager.getSearchUrl(input)
+        }
+        geckoSession.loadUri(url)
+    }
+
+    private fun showDownloadConfirm(download: GeckoSession.DownloadDelegate.Download) {
+        val fileName = download.filename ?: URLUtil.guessFileName(download.uri, null, download.mimeType)
+        AlertDialog.Builder(this)
+            .setTitle("下载确认")
+            .setMessage("文件名: $fileName\n大小: ${formatFileSize(download.sizeBytes)}\n是否开始下载？")
+            .setPositiveButton("下载") { _, _ ->
+                startDownload(download.uri, fileName, download.mimeType)
+            }
+            .setNegativeButton("取消", null)
+            .show()
+    }
+
+    private fun startDownload(url: String, fileName: String, mimeType: String?) {
+        try {
+            val request = DownloadManager.Request(Uri.parse(url))
+            request.setTitle(fileName)
+            request.setDescription("正在下载...")
+            request.setMimeType(mimeType)
+            request.allowScanningByMediaScanner()
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+
+            val manager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+            manager.enqueue(request)
+            Toast.makeText(this, "开始下载: $fileName", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "下载失败: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showBlockedWarning(url: String) {
+        AlertDialog.Builder(this)
+            .setTitle("安全警告")
+            .setMessage("检测到该网站可能存在安全风险：\n$url\n\n是否仍要访问？")
+            .setPositiveButton("仍要访问") { _, _ ->
+                geckoSession.loadUri(url)
+            }
+            .setNegativeButton("返回安全", null)
+            .show()
+    }
+
+    private fun showMenuDialog() {
+        val items = arrayOf(
+            "刷新", "添加书签", "分享", "下载管理", "书签", "历史记录",
+            "密码管理", "Cookie管理", "证书信息", "开发者工具", "隐私空间", "设置"
+        )
+        AlertDialog.Builder(this)
+            .setTitle("菜单")
+            .setItems(items) { _, which ->
+                when (which) {
+                    0 -> geckoSession.reload()
+                    1 -> Toast.makeText(this, "已添加书签", Toast.LENGTH_SHORT).show()
+                    2 -> shareCurrentPage()
+                    3 -> Toast.makeText(this, "下载管理", Toast.LENGTH_SHORT).show()
+                    4 -> Toast.makeText(this, "书签", Toast.LENGTH_SHORT).show()
+                    5 -> Toast.makeText(this, "历史记录", Toast.LENGTH_SHORT).show()
+                    6 -> Toast.makeText(this, "密码管理", Toast.LENGTH_SHORT).show()
+                    7 -> Toast.makeText(this, "Cookie管理", Toast.LENGTH_SHORT).show()
+                    8 -> Toast.makeText(this, "证书信息", Toast.LENGTH_SHORT).show()
+                    9 -> Toast.makeText(this, "开发者工具", Toast.LENGTH_SHORT).show()
+                    10 -> Toast.makeText(this, "隐私空间", Toast.LENGTH_SHORT).show()
+                    11 -> Toast.makeText(this, "设置", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .show()
+    }
+
+    private fun shareCurrentPage() {
+        val url = addressBar.text.toString()
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, url)
+        }
+        startActivity(Intent.createChooser(intent, "分享"))
+    }
+
+    private fun formatFileSize(bytes: Long): String {
+        return when {
+            bytes < 1024 -> "$bytes B"
+            bytes < 1024 * 1024 -> String.format("%.2f KB", bytes / 1024.0)
+            bytes < 1024 * 1024 * 1024 -> String.format("%.2f MB", bytes / (1024.0 * 1024))
+            else -> String.format("%.2f GB", bytes / (1024.0 * 1024 * 1024))
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_refresh -> {
+                geckoSession.reload()
+                true
+            }
+            R.id.action_bookmark -> {
+                Toast.makeText(this, "已添加书签", Toast.LENGTH_SHORT).show()
+                true
+            }
+            R.id.action_share -> {
+                shareCurrentPage()
+                true
+            }
+            R.id.action_settings -> {
+                Toast.makeText(this, "设置", Toast.LENGTH_SHORT).show()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK && geckoSession.canGoBack()) {
+            geckoSession.goBack()
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        geckoView.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        geckoView.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        geckoSession.close()
     }
 }

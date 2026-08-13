@@ -27,6 +27,18 @@ class SettingsManager(context: Context) {
         get() = prefs.getBoolean(KEY_PRIVACY, false)
         set(value) = prefs.edit().putBoolean(KEY_PRIVACY, value).apply()
 
+    var devToolsEnabled: Boolean
+        get() = prefs.getBoolean(KEY_DEVTOOLS, false)
+        set(value) = prefs.edit().putBoolean(KEY_DEVTOOLS, value).apply()
+
+    var homepage: String
+        get() = prefs.getString(KEY_HOMEPAGE, "https://www.bing.com") ?: "https://www.bing.com"
+        set(value) = prefs.edit().putString(KEY_HOMEPAGE, value).apply()
+
+    fun getHomepage(): String = homepage
+
+    fun isDevToolsEnabled(): Boolean = devToolsEnabled
+
     var searchEngine: String
         get() = prefs.getString(KEY_SEARCH_ENGINE, "bing") ?: "bing"
         set(value) = prefs.edit().putString(KEY_SEARCH_ENGINE, value).apply()
@@ -54,6 +66,8 @@ class SettingsManager(context: Context) {
         private const val KEY_AUTOFILL = "autofill_enabled"
         private const val KEY_CAPTCHA = "captcha_auto_enabled"
         private const val KEY_PRIVACY = "privacy_mode_enabled"
+        private const val KEY_DEVTOOLS = "devtools_enabled"
+        private const val KEY_HOMEPAGE = "homepage"
         private const val KEY_SEARCH_ENGINE = "search_engine"
         private const val KEY_THEME = "theme_mode"
     }
