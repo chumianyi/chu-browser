@@ -709,10 +709,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (currentSession.canGoBack()) {
-                currentSession.goBack()
-                return true
-            }
+            currentSession.goBack()
+            return true
         }
         return super.onKeyDown(keyCode, event)
     }
