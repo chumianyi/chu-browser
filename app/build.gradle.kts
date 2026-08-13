@@ -80,7 +80,7 @@ dependencies {
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
     // GeckoView
-    implementation("org.mozilla.geckoview:geckoview-omni-arm64-v8a:121.0.20240108144024")
+    implementation("org.mozilla.geckoview:geckoview-omni-arm64-v8a:121.0.20240108143603")
 
     // Room
     implementation("androidx.room:room-runtime:2.6.1")
