@@ -578,27 +578,29 @@ class MainActivity : AppCompatActivity() {
     private fun injectEruda(session: GeckoSession) {
         try {
             val erudaJs = assets.open("eruda.min.js").bufferedReader().use { it.readText() }
-            val initJs = """
+            val encodedJs = android.net.Uri.encode(erudaJs)
+            val initScript = """
                 (function() {
-                    if (window.eruda) {
-                        eruda.show();
-                        return;
-                    }
+                    if (window.eruda) { eruda.show(); return; }
                     try {
-                        $erudaJs
-                        eruda.init({
-                            tool: ['console', 'elements', 'network', 'resources', 'sources', 'info', 'snippets'],
-                            useShadowDom: true,
-                            autoScale: true,
-                            defaults: { displaySize: 50, transparency: 0.9 }
-                        });
-                        eruda.show();
-                    } catch(e) {
-                        console.error('Eruda init failed:', e);
-                    }
+                        var s = document.createElement('script');
+                        s.textContent = decodeURIComponent('$encodedJs');
+                        document.head.appendChild(s);
+                        setTimeout(function() {
+                            if (window.eruda) {
+                                eruda.init({
+                                    tool: ['console', 'elements', 'network', 'resources', 'sources', 'info', 'snippets'],
+                                    useShadowDom: true,
+                                    autoScale: true,
+                                    defaults: { displaySize: 50, transparency: 0.9 }
+                                });
+                                eruda.show();
+                            }
+                        }, 500);
+                    } catch(e) { console.error('Eruda init failed:', e); }
                 })();
             """.trimIndent()
-            session.evaluateJavaScript(initJs)
+            session.loadUri("javascript:$initScript")
         } catch (e: Exception) {
             e.printStackTrace()
         }
