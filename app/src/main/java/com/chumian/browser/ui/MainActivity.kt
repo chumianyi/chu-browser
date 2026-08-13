@@ -32,6 +32,7 @@ import org.mozilla.geckoview.GeckoRuntimeSettings
 import org.mozilla.geckoview.GeckoSession
 import org.mozilla.geckoview.GeckoView
 import org.mozilla.geckoview.GeckoResult
+import org.mozilla.geckoview.AllowOrDeny
 
 class MainActivity : AppCompatActivity() {
 
@@ -100,17 +101,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupGeckoView() {
-        val trackingMode = if (settingsManager.adBlockEnabled)
-            GeckoRuntimeSettings.TRACKING_PROTECTION_STRICT
-        else
-            GeckoRuntimeSettings.TRACKING_PROTECTION_OFF
-
         val runtimeSettings = GeckoRuntimeSettings.Builder()
             .javaScriptEnabled(true)
-            .domStorageEnabled(true)
-            .webFontsEnabled(true)
-            .hardwareAccelerationEnabled(true)
-            .trackingProtectionMode(trackingMode)
             .remoteDebuggingEnabled(settingsManager.isDevToolsEnabled())
             .consoleOutputEnabled(true)
             .build()
@@ -134,21 +126,11 @@ class MainActivity : AppCompatActivity() {
             override fun onProgressChange(session: GeckoSession, progress: Int) {
                 progressBar.progress = progress
             }
-
-            override fun onSecurityChange(
-                session: GeckoSession,
-                securityInfo: GeckoSession.ProgressDelegate.SecurityInformation?
-            ) {
-            }
         }
 
         geckoSession.contentDelegate = object : GeckoSession.ContentDelegate {
             override fun onTitleChange(session: GeckoSession, title: String?) {
                 toolbar.title = title ?: "Chu浏览器"
-            }
-
-            override fun onLocationChange(session: GeckoSession, url: String?) {
-                url?.let { addressBar.setText(it) }
             }
         }
 
@@ -156,11 +138,11 @@ class MainActivity : AppCompatActivity() {
             override fun onLoadRequest(
                 session: GeckoSession,
                 request: GeckoSession.NavigationDelegate.LoadRequest
-            ): GeckoResult<GeckoSession.NavigationDelegate.LoadRequest>? {
+            ): GeckoResult<AllowOrDeny>? {
                 val url = request.uri
                 if (settingsManager.securityEnabled && !SecurityValidator.validate(url).isSafe) {
                     showBlockedWarning(url)
-                    return GeckoResult.fromValue(null)
+                    return GeckoResult.fromValue(AllowOrDeny.DENY)
                 }
                 return null
             }
@@ -171,15 +153,6 @@ class MainActivity : AppCompatActivity() {
             ): GeckoResult<GeckoSession>? {
                 loadUrl(uri)
                 return null
-            }
-        }
-
-        geckoSession.downloadDelegate = object : GeckoSession.DownloadDelegate {
-            override fun onDownload(
-                session: GeckoSession,
-                download: GeckoSession.DownloadDelegate.Download
-            ) {
-                showDownloadConfirm(download)
             }
         }
     }
@@ -200,15 +173,11 @@ class MainActivity : AppCompatActivity() {
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_back -> {
-                    if (geckoSession.canGoBack()) {
-                        geckoSession.goBack()
-                    }
+                    geckoSession.goBack()
                     true
                 }
                 R.id.nav_forward -> {
-                    if (geckoSession.canGoForward()) {
-                        geckoSession.goForward()
-                    }
+                    geckoSession.goForward()
                     true
                 }
                 R.id.nav_home -> {
@@ -237,36 +206,6 @@ class MainActivity : AppCompatActivity() {
             settingsManager.getSearchUrl(input)
         }
         geckoSession.loadUri(url)
-    }
-
-    private fun showDownloadConfirm(download: GeckoSession.DownloadDelegate.Download) {
-        val fileName = download.filename ?: URLUtil.guessFileName(download.uri, null, download.mimeType)
-        AlertDialog.Builder(this)
-            .setTitle("下载确认")
-            .setMessage("文件名: $fileName\n大小: ${formatFileSize(download.sizeBytes)}\n是否开始下载？")
-            .setPositiveButton("下载") { _, _ ->
-                startDownload(download.uri, fileName, download.mimeType)
-            }
-            .setNegativeButton("取消", null)
-            .show()
-    }
-
-    private fun startDownload(url: String, fileName: String, mimeType: String?) {
-        try {
-            val request = DownloadManager.Request(Uri.parse(url))
-            request.setTitle(fileName)
-            request.setDescription("正在下载...")
-            request.setMimeType(mimeType)
-            request.allowScanningByMediaScanner()
-            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
-
-            val manager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-            manager.enqueue(request)
-            Toast.makeText(this, "开始下载: $fileName", Toast.LENGTH_SHORT).show()
-        } catch (e: Exception) {
-            Toast.makeText(this, "下载失败: ${e.message}", Toast.LENGTH_SHORT).show()
-        }
     }
 
     private fun showBlockedWarning(url: String) {
@@ -315,16 +254,6 @@ class MainActivity : AppCompatActivity() {
         startActivity(Intent.createChooser(intent, "分享"))
     }
 
-    private fun formatFileSize(bytes: Long): String {
-        return when {
-            bytes < 0 -> "未知"
-            bytes < 1024 -> "$bytes B"
-            bytes < 1024 * 1024 -> String.format("%.2f KB", bytes / 1024.0)
-            bytes < 1024 * 1024 * 1024 -> String.format("%.2f MB", bytes / (1024.0 * 1024))
-            else -> String.format("%.2f GB", bytes / (1024.0 * 1024 * 1024))
-        }
-    }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         return true
@@ -353,21 +282,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK && geckoSession.canGoBack()) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             geckoSession.goBack()
             return true
         }
         return super.onKeyDown(keyCode, event)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        geckoView.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        geckoView.onPause()
     }
 
     override fun onDestroy() {
