@@ -12,6 +12,9 @@ interface PasswordDao {
     @Query("SELECT * FROM passwords ORDER BY timestamp DESC")
     fun getAll(): Flow<List<PasswordItem>>
 
+    @Query("SELECT * FROM passwords ORDER BY timestamp DESC")
+    suspend fun getAllList(): List<PasswordItem>
+
     @Insert
     suspend fun insert(password: PasswordItem)
 

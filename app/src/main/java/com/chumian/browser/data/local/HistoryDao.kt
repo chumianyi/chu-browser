@@ -12,6 +12,9 @@ interface HistoryDao {
     @Query("SELECT * FROM history ORDER BY timestamp DESC")
     fun getAll(): Flow<List<HistoryItem>>
 
+    @Query("SELECT * FROM history ORDER BY timestamp DESC")
+    suspend fun getAllList(): List<HistoryItem>
+
     @Insert
     suspend fun insert(history: HistoryItem)
 

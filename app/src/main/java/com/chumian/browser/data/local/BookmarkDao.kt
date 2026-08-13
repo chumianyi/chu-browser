@@ -12,6 +12,9 @@ interface BookmarkDao {
     @Query("SELECT * FROM bookmarks ORDER BY timestamp DESC")
     fun getAll(): Flow<List<Bookmark>>
 
+    @Query("SELECT * FROM bookmarks ORDER BY timestamp DESC")
+    suspend fun getAllList(): List<Bookmark>
+
     @Insert
     suspend fun insert(bookmark: Bookmark)
 
