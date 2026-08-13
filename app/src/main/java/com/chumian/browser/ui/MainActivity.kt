@@ -9,8 +9,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
@@ -27,17 +25,13 @@ import com.chumian.browser.R
 import com.chumian.browser.adblock.AdBlocker
 import com.chumian.browser.security.SecurityValidator
 import com.chumian.browser.util.SettingsManager
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.appbar.MaterialToolbar
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.mozilla.geckoview.GeckoRuntime
+import org.mozilla.geckoview.GeckoRuntimeSettings
 import org.mozilla.geckoview.GeckoSession
 import org.mozilla.geckoview.GeckoView
-import org.mozilla.geckoview.ContentBlocking
-import org.mozilla.geckoview.GeckoRuntimeSettings
+import org.mozilla.geckoview.GeckoResult
 
 class MainActivity : AppCompatActivity() {
 
@@ -50,7 +44,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bottomNav: BottomNavigationView
     private lateinit var settingsManager: SettingsManager
     private lateinit var adBlocker: AdBlocker
-    private lateinit var securityValidator: SecurityValidator
 
     private val permissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -67,7 +60,7 @@ class MainActivity : AppCompatActivity() {
 
         settingsManager = SettingsManager(this)
         adBlocker = AdBlocker(this)
-        securityValidator = SecurityValidator(this)
+        adBlocker.initialize()
 
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -107,15 +100,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupGeckoView() {
+        val trackingMode = if (settingsManager.adBlockEnabled)
+            GeckoRuntimeSettings.TRACKING_PROTECTION_STRICT
+        else
+            GeckoRuntimeSettings.TRACKING_PROTECTION_OFF
+
         val runtimeSettings = GeckoRuntimeSettings.Builder()
             .javaScriptEnabled(true)
             .domStorageEnabled(true)
             .webFontsEnabled(true)
             .hardwareAccelerationEnabled(true)
-            .trackingProtectionMode(if (adBlocker.isAdBlockEnabled())
-                GeckoRuntimeSettings.TRACKING_PROTECTION_STRICT
-            else
-                GeckoRuntimeSettings.TRACKING_PROTECTION_OFF)
+            .trackingProtectionMode(trackingMode)
             .remoteDebuggingEnabled(settingsManager.isDevToolsEnabled())
             .consoleOutputEnabled(true)
             .build()
@@ -163,7 +158,7 @@ class MainActivity : AppCompatActivity() {
                 request: GeckoSession.NavigationDelegate.LoadRequest
             ): GeckoResult<GeckoSession.NavigationDelegate.LoadRequest>? {
                 val url = request.uri
-                if (securityValidator.shouldBlock(url)) {
+                if (settingsManager.securityEnabled && !SecurityValidator.validate(url).isSafe) {
                     showBlockedWarning(url)
                     return GeckoResult.fromValue(null)
                 }
@@ -322,6 +317,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun formatFileSize(bytes: Long): String {
         return when {
+            bytes < 0 -> "未知"
             bytes < 1024 -> "$bytes B"
             bytes < 1024 * 1024 -> String.format("%.2f KB", bytes / 1024.0)
             bytes < 1024 * 1024 * 1024 -> String.format("%.2f MB", bytes / (1024.0 * 1024))

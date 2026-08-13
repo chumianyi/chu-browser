@@ -9,15 +9,15 @@
         android:icon="@drawable/ic_forward"
         android:title="前进" />
     <item
-        android:id="@+id/nav_refresh"
+        android:id="@+id/nav_home"
         android:icon="@drawable/ic_refresh"
-        android:title="刷新" />
-    <item
-        android:id="@+id/nav_bookmark"
-        android:icon="@drawable/ic_bookmark"
-        android:title="书签" />
+        android:title="主页" />
     <item
         android:id="@+id/nav_tabs"
         android:icon="@drawable/ic_tabs"
         android:title="标签" />
+    <item
+        android:id="@+id/nav_menu"
+        android:icon="@drawable/ic_menu"
+        android:title="菜单" />
 </menu>
