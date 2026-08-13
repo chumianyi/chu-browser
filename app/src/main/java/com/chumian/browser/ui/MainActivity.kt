@@ -181,6 +181,9 @@ class MainActivity : AppCompatActivity() {
                 if (s == currentSession) {
                     progressBar.visibility = View.GONE
                 }
+                if (success && settingsManager.isDevToolsEnabled()) {
+                    injectEruda(s)
+                }
             }
 
             override fun onProgressChange(s: GeckoSession, progress: Int) {
@@ -572,22 +575,53 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
+    private fun injectEruda(session: GeckoSession) {
+        try {
+            val erudaJs = assets.open("eruda.min.js").bufferedReader().use { it.readText() }
+            val initJs = """
+                (function() {
+                    if (window.eruda) {
+                        eruda.show();
+                        return;
+                    }
+                    try {
+                        $erudaJs
+                        eruda.init({
+                            tool: ['console', 'elements', 'network', 'resources', 'sources', 'info', 'snippets'],
+                            useShadowDom: true,
+                            autoScale: true,
+                            defaults: { displaySize: 50, transparency: 0.9 }
+                        });
+                        eruda.show();
+                    } catch(e) {
+                        console.error('Eruda init failed:', e);
+                    }
+                })();
+            """.trimIndent()
+            session.evaluateJavaScript(initJs)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     private fun showDevTools() {
         val enabled = settingsManager.isDevToolsEnabled()
         AlertDialog.Builder(this)
             .setTitle("开发者工具")
             .setMessage(
-                "远程调试：${if (enabled) "已启用" else "已禁用"}\n\n" +
-                "使用方法：\n" +
-                "1. 在电脑上打开 Firefox 浏览器\n" +
-                "2. 地址栏输入 about:debugging\n" +
-                "3. 启用 USB 调试并连接设备\n" +
-                "4. 即可远程调试本浏览器页面\n\n" +
-                "当前状态：${if (enabled) "可连接" else "需在设置中启用"}"
+                "开发者工具状态：${if (enabled) "已启用" else "已禁用"}\n\n" +
+                "功能说明：\n" +
+                "• Eruda 移动端调试工具（Elements/Console/Network/Resources/Sources）\n" +
+                "• Firefox 远程调试（about:debugging）\n\n" +
+                "启用后，每个网页加载完成会自动注入 Eruda 悬浮按钮，点击展开完整调试面板。"
             )
-            .setPositiveButton(if (enabled) "禁用调试" else "启用调试") { _, _ ->
+            .setPositiveButton(if (enabled) "关闭开发者工具" else "启用开发者工具") { _, _ ->
                 settingsManager.devToolsEnabled = !enabled
-                Toast.makeText(this, "远程调试已${if (!enabled) "启用" else "禁用"}，重启应用生效", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "开发者工具已${if (!enabled) "启用" else "关闭"}，刷新页面生效", Toast.LENGTH_SHORT).show()
+            }
+            .setNeutralButton("立即注入Eruda") { _, _ ->
+                injectEruda(currentSession)
+                Toast.makeText(this, "Eruda 已注入当前页面", Toast.LENGTH_SHORT).show()
             }
             .setNegativeButton("关闭", null)
             .show()
@@ -661,19 +695,46 @@ class MainActivity : AppCompatActivity() {
                 settingsManager.securityEnabled = !security
                 Toast.makeText(this, "安全验证已${if (!security) "开启" else "关闭"}", Toast.LENGTH_SHORT).show()
             }
-            .setNegativeButton("搜索引擎") { _, _ ->
-                val engines = arrayOf("Bing", "Google", "百度", "DuckDuckGo")
+            .setNegativeButton("更多设置") { _, _ ->
+                val moreItems = arrayOf(
+                    "开发者工具：${if (devtools) "开启" else "关闭"}",
+                    "隐私模式：${if (privacy) "开启" else "关闭"}",
+                    "自动填充：${if (autofill) "开启" else "关闭"}",
+                    "搜索引擎：${searchEngine.uppercase()}"
+                )
                 AlertDialog.Builder(this)
-                    .setTitle("选择搜索引擎")
-                    .setItems(engines) { _, which ->
-                        val engine = when (which) {
-                            0 -> "bing"
-                            1 -> "google"
-                            2 -> "baidu"
-                            else -> "duckduckgo"
+                    .setTitle("更多设置")
+                    .setItems(moreItems) { _, which ->
+                        when (which) {
+                            0 -> {
+                                settingsManager.devToolsEnabled = !devtools
+                                Toast.makeText(this, "开发者工具已${if (!devtools) "开启" else "关闭"}，刷新页面生效", Toast.LENGTH_SHORT).show()
+                            }
+                            1 -> {
+                                settingsManager.privacyModeEnabled = !privacy
+                                Toast.makeText(this, "隐私模式已${if (!privacy) "开启" else "关闭"}", Toast.LENGTH_SHORT).show()
+                            }
+                            2 -> {
+                                settingsManager.autofillEnabled = !autofill
+                                Toast.makeText(this, "自动填充已${if (!autofill) "开启" else "关闭"}", Toast.LENGTH_SHORT).show()
+                            }
+                            3 -> {
+                                val engines = arrayOf("Bing", "Google", "百度", "DuckDuckGo")
+                                AlertDialog.Builder(this)
+                                    .setTitle("选择搜索引擎")
+                                    .setItems(engines) { _, w ->
+                                        val engine = when (w) {
+                                            0 -> "bing"
+                                            1 -> "google"
+                                            2 -> "baidu"
+                                            else -> "duckduckgo"
+                                        }
+                                        settingsManager.searchEngine = engine
+                                        Toast.makeText(this, "搜索引擎已切换为 ${engines[w]}", Toast.LENGTH_SHORT).show()
+                                    }
+                                    .show()
+                            }
                         }
-                        settingsManager.searchEngine = engine
-                        Toast.makeText(this, "搜索引擎已切换为 ${engines[which]}", Toast.LENGTH_SHORT).show()
                     }
                     .show()
             }
