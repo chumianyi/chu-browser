@@ -31,13 +31,11 @@ class SettingsManager(context: Context) {
         get() = prefs.getBoolean(KEY_DEVTOOLS, false)
         set(value) = prefs.edit().putBoolean(KEY_DEVTOOLS, value).apply()
 
-    var homepage: String
-        get() = prefs.getString(KEY_HOMEPAGE, "https://www.bing.com") ?: "https://www.bing.com"
-        set(value) = prefs.edit().putString(KEY_HOMEPAGE, value).apply()
-
-    fun getHomepage(): String = homepage
-
     fun isDevToolsEnabled(): Boolean = devToolsEnabled
+
+    fun getHomepage(): String = prefs.getString(KEY_HOMEPAGE, "https://www.bing.com") ?: "https://www.bing.com"
+
+    fun setHomepage(value: String) = prefs.edit().putString(KEY_HOMEPAGE, value).apply()
 
     var searchEngine: String
         get() = prefs.getString(KEY_SEARCH_ENGINE, "bing") ?: "bing"
