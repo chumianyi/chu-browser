@@ -104,7 +104,6 @@ class MainActivity : AppCompatActivity() {
         val runtimeSettings = GeckoRuntimeSettings.Builder()
             .javaScriptEnabled(true)
             .remoteDebuggingEnabled(settingsManager.isDevToolsEnabled())
-            .consoleOutputEnabled(true)
             .build()
 
         geckoRuntime = GeckoRuntime.create(this, runtimeSettings)
