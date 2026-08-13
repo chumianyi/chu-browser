@@ -488,6 +488,7 @@
     <string name="menu_privacy_mode">隐私模式</string>
     <string name="menu_refresh">刷新</string>
     <string name="menu_tabs">标签页</string>
+    <string name="menu_cookies">Cookie管理</string>
 
     <!-- Settings strings -->
     <string name="settings_search_engine">默认搜索引擎</string>
